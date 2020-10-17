@@ -50,6 +50,7 @@ if __name__ == '__main__':
     dataloader = new_dataloader(dataset_path=paths.data_dir / 'dataset.pkl', mel_dir=paths.mel_dir,
                                 token_dir=paths.token_dir, batch_size=16)
 
+    whitespace_index = tokenizer(' ')[0]
 
 
     for epoch in range(1, 1000):
@@ -60,12 +61,16 @@ if __name__ == '__main__':
             pred = pred.transpose(0, 1).log_softmax(2)
             loss_ctc = ctc_loss(pred, tokens, mel_len, tokens_len)
             loss_blank = torch.softmax(pred, dim=-1)[:, :, 0].mean()
-            loss = loss_ctc + loss_blank
+            loss_white = torch.softmax(pred, dim=-1)[:, :, whitespace_index].mean()
+            if epoch < 10:
+                loss = loss_ctc + 0.*loss_blank
+            else:
+                loss = loss_ctc + loss_blank
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             optim.step()
             if i % 100 == 0:
-                print(f'{i} / {len(dataloader)} loss ctc: {loss_ctc.item()} loss blank: {loss_blank.item()}')
+                print(f'epoch {epoch} {i} / {len(dataloader)} loss ctc: {loss_ctc.item()} loss blank: {loss_blank.item()}')
                 first_tar = tokens[0].detach().cpu().numpy().tolist()
                 first_pred = pred.transpose(0, 1)[0].max(1)[1].detach().cpu().numpy().tolist()
                 text = tokenizer.decode(first_pred)
