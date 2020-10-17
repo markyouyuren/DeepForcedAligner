@@ -59,7 +59,7 @@ if __name__ == '__main__':
             pred = model(mel)
             pred = pred.transpose(0, 1).log_softmax(2)
             loss_ctc = ctc_loss(pred, tokens, mel_len, tokens_len)
-            loss_blank = torch.softmax(pred, dim=-1)[:, :, 0]
+            loss_blank = torch.softmax(pred, dim=-1)[:, :, 0].mean()
             loss = loss_ctc + loss_blank
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
