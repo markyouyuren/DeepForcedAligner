@@ -1,7 +1,7 @@
 
 paths:
-  data_dir: /tmp/dfa_data
-  checkpoint_dir: /tmp/dfa_checkpoints
+  data_dir: dfa_data
+  checkpoint_dir: dfa_checkpoints
 
 audio:
   sample_rate: 22050
@@ -13,5 +13,5 @@ audio:
   fmax: 8000
 
 model:
-  lstm_dim: 128
-  conv_dim: 64
+  lstm_dim: 512
+  conv_dim: 512
