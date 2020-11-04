@@ -100,7 +100,7 @@ class Trainer:
             loss_sum = 0
             latest_checkpoint = self.paths.checkpoint_dir / 'latest_model.pt'
             torch.save({'model': model.state_dict(), 'optim': optim.state_dict(),
-                        'config': config, 'symbols': symbols},
+                        'config': config, 'symbols': symbols, 'model_rev': model_rev, 'optim_rev': optim_rev},
                        latest_checkpoint)
 
     def generate_plots(self, model: Aligner, model_rev: Aligner, tokenizer: Tokenizer) -> None:
