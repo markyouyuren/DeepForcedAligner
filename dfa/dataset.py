@@ -66,13 +66,21 @@ class BinnedLengthSampler(Sampler):
 def collate_dataset(batch: List[dict]) -> torch.tensor:
     tokens = [b['tokens'] for b in batch]
     tokens = pad_sequence(tokens, batch_first=True, padding_value=0)
+    tokens_rev = [torch.flip(b['tokens'], dims=[0]) for b in batch]
+    tokens_rev = pad_sequence(tokens_rev, batch_first=True, padding_value=0)
+
     mels = [b['mel'] for b in batch]
     mels = pad_sequence(mels, batch_first=True, padding_value=0)
+
+    mels_rev = [torch.flip(b['mel'], dims=[1]) for b in batch]
+    mels_rev = pad_sequence(mels_rev, batch_first=True, padding_value=0)
+
     tokens_len = torch.tensor([b['tokens_len'] for b in batch]).long()
     mel_len = torch.tensor([b['mel_len'] for b in batch]).long()
     item_ids = [b['item_id'] for b in batch]
     return {'tokens': tokens, 'mel': mels, 'tokens_len': tokens_len,
-            'mel_len': mel_len, 'item_id': item_ids}
+            'mel_len': mel_len, 'item_id': item_ids,
+            'tokens_rev': tokens_rev, 'mel_rev': mels_rev}
 
 
 def new_dataloader(dataset_path: Path, mel_dir: Path,

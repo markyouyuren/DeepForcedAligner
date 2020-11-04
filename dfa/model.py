@@ -51,11 +51,11 @@ class Aligner(torch.nn.Module):
         return self.step.data.item()
 
     @classmethod
-    def from_checkpoint(cls, checkpoint: dict) -> 'Aligner':
+    def from_checkpoint(cls, checkpoint: dict, model_name='model') -> 'Aligner':
         config = checkpoint['config']
         symbols = checkpoint['symbols']
         model = Aligner(n_mels=config['audio']['n_mels'],
                         num_symbols=len(symbols) + 1,
                         **config['model'])
-        model.load_state_dict(checkpoint['model'])
+        model.load_state_dict(checkpoint[model_name])
         return model

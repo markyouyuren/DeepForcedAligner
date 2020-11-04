@@ -42,8 +42,10 @@ def unpickle_binary(file: Union[str, Path]) -> Any:
 
 
 def to_device(batch: dict, device: torch.device) -> tuple:
-    tokens, mel, tokens_len, mel_len = batch['tokens'], batch['mel'], \
-                                       batch['tokens_len'], batch['mel_len']
-    tokens, mel, tokens_len, mel_len = tokens.to(device), mel.to(device), \
-                                       tokens_len.to(device), mel_len.to(device)
-    return tokens, mel, tokens_len, mel_len
+    tokens, tokens_rev, mel, mel_rev, tokens_len, mel_len = batch['tokens'], batch['tokens_rev'], \
+                                                            batch['mel'], batch['mel_rev'], \
+                                                            batch['tokens_len'], batch['mel_len']
+    tokens, tokens_rev, mel, mel_rev, tokens_len, mel_len = tokens.to(device), \
+                                                            tokens_rev.to(device), mel.to(device), mel_rev.to(device), \
+                                                            tokens_len.to(device), mel_len.to(device)
+    return tokens, tokens_rev, mel, mel_rev, tokens_len, mel_len

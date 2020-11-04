@@ -36,9 +36,15 @@ if __name__ == '__main__':
             model = Aligner(n_mels=config['audio']['n_mels'],
                             num_symbols=len(symbols)+1,
                             **config['model'])
-            optim = optim.Adam(model.parameters(), lr=1e-4)
-            checkpoint = {'model': model.state_dict(), 'optim': optim.state_dict(),
-                          'config': config, 'symbols': symbols}
+            optim_for = optim.Adam(model.parameters(), lr=1e-4)
+            model_rev = Aligner(n_mels=config['audio']['n_mels'],
+                            num_symbols=len(symbols)+1,
+                            **config['model'])
+            optim_rev = optim.Adam(model_rev.parameters(), lr=1e-4)
+            checkpoint = {'model': model.state_dict(), 'optim': optim_for.state_dict(),
+                          'config': config, 'symbols': symbols,
+                          'model_rev': model_rev.state_dict(),
+                          'optim_rev': optim_rev.state_dict()}
 
     trainer = Trainer(paths=paths)
     trainer.train(checkpoint, train_params=config['training'])
