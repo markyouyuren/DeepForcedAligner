@@ -134,5 +134,13 @@ class Trainer:
         self.writer.add_text('Text/Prediction/reversed', '    ' + pred_rev_text, global_step=model.get_step())
         self.writer.add_text('Text/Target_Duration_Repeated/reversed',
                              '    ' + target_duration_rep, global_step=model.get_step())
-        self.writer.add_text('Text/Target', '    ' + target_text, global_step=model.get_step())
         model_rev.train()
+
+        pred_mix = (pred + pred_rev) / 2.
+        durations_mix = extract_durations_with_dijkstra(self.longest_tokens, pred_mix.numpy())
+        pred_mix_max = pred_mix.max(1)[1].numpy().tolist()
+        pred_mix_text = tokenizer.decode(pred_mix_max)
+        target_duration_rep = ''.join(c * durations_mix[i] for i, c in enumerate(target_text))
+        self.writer.add_text('Text/Prediction/mix', '    ' + pred_mix_text, global_step=model.get_step())
+        self.writer.add_text('Text/Target_Duration_Repeated/mix',
+                             '    ' + target_duration_rep, global_step=model.get_step())
