@@ -11,6 +11,8 @@ from dfa.model import Aligner
 from dfa.paths import Paths
 from dfa.text import Tokenizer
 from dfa.utils import to_device
+import matplotlib.pyplot as plt
+
 
 
 class Trainer:
@@ -144,3 +146,16 @@ class Trainer:
         self.writer.add_text('Text/Prediction/mix', '    ' + pred_mix_text, global_step=model.get_step())
         self.writer.add_text('Text/Target_Duration_Repeated/mix',
                              '    ' + target_duration_rep, global_step=model.get_step())
+
+        pred = pred[:400, :]
+        pred_rev = pred_rev[:400, :]
+        mel = self.longest_mel[:400, :]
+        mel = np.flip(mel, axis=1).swapaxes(0, 1)
+        fig, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True, dpi=300)
+        plt.xticks(np.arange(1, mel.shape[1], 20))
+        ax1.imshow(mel, interpolation='nearest', aspect='auto')
+        ax2.plot(1-pred[:, 0], color='red', linewidth=1)
+        ax3.plot(1-pred_rev[:, 0], color='blue', linewidth=1)
+        ax2.grid(True, axis='x', which='both')
+        ax3.grid(True, axis='x', which='both')
+        self.writer.add_figure('Plots/Prediction', fig, global_step=model.get_step())
