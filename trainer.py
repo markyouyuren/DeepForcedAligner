@@ -113,3 +113,4 @@ class Trainer:
         ax1.imshow(mel, interpolation='nearest', aspect='auto')
         ax2.plot(1 - pred[:, 0], color='red', linewidth=1)
         ax2.grid(True, axis='x', which='both')
+        self.writer.add_figure('Plots/Prediction', fig, global_step=model.get_step())
