@@ -13,6 +13,10 @@ from dfa.text import Tokenizer
 from dfa.utils import get_files, read_config, pickle_binary, read_metafile
 
 
+def word2ngrams(text, n=2):
+    return ["".join(j) for j in zip(*[text[i:] for i in range(n)])]
+
+
 class Preprocessor:
     """Performs mel extraction and tokenization and stores the resulting torch tensors."""
     
@@ -67,8 +71,10 @@ if __name__ == '__main__':
     text_dict = read_metafile(paths.metadata_path)
     symbols = set()
     for text in text_dict.values():
-        symbols.update(set(text))
+        bigrams = [''.join(j) for j in zip(*[text[i:] for i in range(2)])]
+        symbols.update(set(bigrams))
     symbols = sorted(list(symbols))
+    print(f'num bigrams: {len(symbols)}')
 
     if paths.precomputed_mels:
         audio_files = get_files(paths.precomputed_mels, extension='.npy')

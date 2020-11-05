@@ -12,8 +12,12 @@ class Tokenizer:
         self.vocab_size = len(self.symbols) + 1
 
     def __call__(self, sentence):
-        sequence = [self.token_to_idx[c] for c in sentence if c in self.token_to_idx]
-        return sequence
+        seq = []
+        ngrams = [''.join(j) for j in zip(*[sentence[i:] for i in range(2)])]
+        for ng in ngrams:
+            index = self.token_to_idx[ng]
+            seq.append(index)
+        return seq
 
     def decode(self, sequence):
         return ''.join([self.idx_to_token[int(t)] for t in sequence if int(t) in self.idx_to_token])

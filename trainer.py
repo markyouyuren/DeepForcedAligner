@@ -92,13 +92,13 @@ class Trainer:
         device = next(model.parameters()).device
         longest_mel = torch.tensor(self.longest_mel).unsqueeze(0).float().to(device)
         pred = model(longest_mel)[0].detach().cpu().softmax(dim=-1)
-        durations = extract_durations_with_dijkstra(self.longest_tokens, pred.numpy())
+        #durations = extract_durations_with_dijkstra(self.longest_tokens, pred.numpy())
         pred_max = pred.max(1)[1].numpy().tolist()
         pred_text = tokenizer.decode(pred_max)
         target_text = tokenizer.decode(self.longest_tokens)
-        target_duration_rep = ''.join(c * durations[i] for i, c in enumerate(target_text))
+        #target_duration_rep = ''.join(c * durations[i] for i, c in enumerate(target_text))
         self.writer.add_text('Text/Prediction', '    ' + pred_text, global_step=model.get_step())
-        self.writer.add_text('Text/Target_Duration_Repeated',
-                             '    ' + target_duration_rep, global_step=model.get_step())
+        #self.writer.add_text('Text/Target_Duration_Repeated',
+        #                     '    ' + target_duration_rep, global_step=model.get_step())
         self.writer.add_text('Text/Target', '    ' + target_text, global_step=model.get_step())
         model.train()
