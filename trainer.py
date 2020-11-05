@@ -108,7 +108,7 @@ class Trainer:
         pred = pred[:400, :]
         mel = self.longest_mel[:400, :]
         mel = np.flip(mel, axis=1).swapaxes(0, 1)
-        fig, (ax1, ax2) = plt.subplots(3, 1, sharex=True, dpi=300)
+        fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, dpi=300)
         plt.xticks(np.arange(1, mel.shape[1], 20))
         ax1.imshow(mel, interpolation='nearest', aspect='auto')
         ax2.plot(1 - pred[:, 0], color='red', linewidth=1)
